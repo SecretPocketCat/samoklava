@@ -107,7 +107,7 @@ outlines:
         side: left
         size: [kx + px, ky + py]
         corner: px
-    board_perimeter:
+    _board_perimeter:
       - type: polygon
         points:
           # top of fingers
@@ -152,7 +152,7 @@ outlines:
             shift: [ kxr, kyb ]
           - ref: matrix_pinky_bottom
             shift: [ kxl, kyb ]
-    plate_perimeter:
+    _plate_perimeter:
       - type: polygon
         points:
           # top of fingers
@@ -189,38 +189,38 @@ outlines:
             shift: [ kxr, kyb ]
           - ref: matrix_pinky_bottom
             shift: [ kxl, kyb ]
-    switches:
+    _switches:
       main:
         type: keys
         side: left
         size: 14
         bound: false
-    keycaps:
+    _keycaps:
       main:
         type: keys
         side: left
         size: [kx, ky]
         bound: false
         corner: 1
-    keywell:
+    _keywell:
       main:
         type: outline
         name: raw
       plate_perimeter:
         type: outline
-        name: plate_perimeter
+        name: _plate_perimeter
         operation: add
         fillet: px
-    base_outline:
+    _base_outline:
       main:
         type: outline
-        name: keywell
+        name: _keywell
       controller:
         type: outline
-        name: board_perimeter
+        name: _board_perimeter
         fillet: px
         operation: add
-    screw_holes:
+    _screw_holes:
       top_left:
         type: circle
         anchor:
@@ -251,8 +251,8 @@ outlines:
           - ref: thumbfan_far_thumb
             shift: [-0.55 kx, -0.2 ky]
         radius: 1.05
-    mounting_holes:
-      $extends: outlines.exports.screw_holes
+    _mounting_holes:
+      $extends: outlines.exports._screw_holes
       top_left:
         radius: 2.05
       bottom_left:
@@ -266,33 +266,33 @@ outlines:
     bottom_outline:
       main:
         type: outline
-        name: base_outline
+        name: _base_outline
       screw_holes:
         type: outline
         # TODO use footprints with pad + via reinforcement as mounting holes
-        name: screw_holes
+        name: _screw_holes
         operation: subtract
     plate:
       main:
         type: outline
-        name: keywell
+        name: _keywell
       switches:
         type: outline
-        name: switches
+        name: _switches
         operation: subtract
       mounting_holes:
         type: outline
         # TODO use footprints with pad + via reinforcement as mounting holes
-        name: screw_holes
+        name: _screw_holes
         operation: subtract
     pcb:
       main:
         type: outline
-        name: base_outline
+        name: _base_outline
       mounting_holes:
         type: outline
         # TODO use plated through hole footprints as mounting holes
-        name: mounting_holes
+        name: _mounting_holes
         operation: subtract
 pcbs:
   top_plate:
