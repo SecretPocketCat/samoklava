@@ -10,6 +10,14 @@ units:
   kyb: -0.5(ky+py)
   kxr: 0.5(kx+px)
   kxl: -0.5(kx+px)
+  board_thickness: 1.6
+  key_clip_depth: 1.3
+  key_surface_depth: 2.2
+  case_bottom_thickness: 1.6
+  case_wall_thickness: 1.6
+  case_leg_mount_thickness: 7
+  case_bottom_offset: 3.15
+  case_depth: case_bottom_thickness + case_bottom_offset + board_thickness + key_surface_depth + 1
 points:
   key:
     footprints:
@@ -189,6 +197,51 @@ outlines:
             shift: [ kxr, kyb ]
           - ref: matrix_pinky_bottom
             shift: [ kxl, kyb ]
+    _case_perimeter:
+      - type: polygon
+        points:
+          # top of fingers
+          - ref: matrix_pinky_top
+            shift: [ kxl - case_wall_thickness, kyt+case_wall_thickness ]
+          - ref: matrix_pinky_top
+            shift: [ kxr - case_wall_thickness - px, kyt + case_wall_thickness ]
+          - ref: matrix_ring_top
+            shift: [ kxl - case_wall_thickness, kyt + case_wall_thickness ]
+          - ref: matrix_ring_top
+            shift: [ kxr - case_wall_thickness - px, kyt + case_wall_thickness ]
+          - ref: matrix_middle_top
+            shift: [ kxl - case_wall_thickness, kyt + case_wall_thickness + 2.2]
+          - ref: matrix_middle_top
+            shift: [ kxr + case_wall_thickness, kyt + case_wall_thickness + 2.2]
+          - ref: matrix_index_top
+            shift: [ kxl + case_wall_thickness + px, kyt + case_wall_thickness ]
+          - ref: matrix_index_top
+            shift: [ kxr + case_wall_thickness, kyt + case_wall_thickness ]
+          - ref: matrix_inner_top
+            shift: [ kxl + case_wall_thickness, kyt + case_wall_thickness ]
+          - ref: matrix_inner_top
+            shift: [ kxr + case_wall_thickness, kyt + case_wall_thickness ]
+          # controller area
+          - ref: matrix_inner_top
+            shift: [ kxr + case_wall_thickness, kyt + controller_shift_y + case_wall_thickness ]
+          - ref: matrix_inner_top
+            shift: [ kxr+controller_x + case_wall_thickness , kyt + controller_shift_y + case_wall_thickness ]
+          - ref: matrix_inner_top
+            shift: [ kxr+controller_x + case_wall_thickness, kyt + controller_shift_y + case_wall_thickness ]
+          - ref: matrix_inner_top
+            shift: [ kxr+controller_x + case_wall_thickness, kyt + controller_shift_y - controller_y - case_wall_thickness + py/2]
+          #thumb cluster
+          - ref: thumbfan_far_thumb
+            shift: [ kxr + case_wall_thickness, kyt + case_wall_thickness ]
+          - ref: thumbfan_far_thumb
+            shift: [ kxr + case_wall_thickness, kyb - case_wall_thickness ]
+          - ref: thumbfan_near_thumb
+            shift: [ kxl - case_wall_thickness + px , kyb - case_wall_thickness ]
+          #bottom of fingers
+          - ref: matrix_pinky_bottom
+            shift: [ kxr + case_wall_thickness, kyb - case_wall_thickness]
+          - ref: matrix_pinky_bottom
+            shift: [ kxl - case_wall_thickness, kyb - case_wall_thickness]
     _switches:
       main:
         type: keys
@@ -220,6 +273,22 @@ outlines:
         name: _board_perimeter
         fillet: px
         operation: add
+    _side_outline:
+      outer:
+        type: outline
+        name: _case_perimeter
+        fillet: px + case_wall_thickness
+      inner:
+        type: outline
+        name: _base_outline
+        operation: subtract
+    side_cut:
+      - type: rectangle
+        anchor:
+          - ref: matrix_inner_top
+          - shift: [32, -48 + controller_shift_y]
+        size: [5,19]
+        corner: 2.5
     _screw_holes:
       top_left:
         type: circle
@@ -263,6 +332,42 @@ outlines:
         radius: 2.05
       thumb:
         radius: 2.05
+    _mounting_posts:
+      $extends: outlines.exports._screw_holes
+      top_left:
+        radius: 2
+      bottom_left:
+        radius: 2
+      top_right:
+        radius: 2
+      palm:
+        radius: 2
+      thumb:
+        radius: 2
+    _mounting_post_offsets:
+      $extends: outlines.exports._screw_holes
+      top_left:
+        radius: 3
+      bottom_left:
+        radius: 3
+      top_right:
+        radius: 3
+      palm:
+        radius: 3
+      thumb:
+        radius: 3
+    _mounting_post_holes:
+      $extends: outlines.exports._screw_holes
+      top_left:
+        radius: .85
+      bottom_left:
+        radius: .85
+      top_right:
+        radius: .85
+      palm:
+        radius: .85
+      thumb:
+        radius: .85
     bottom_outline:
       main:
         type: outline
@@ -294,6 +399,50 @@ outlines:
         # TODO use plated through hole footprints as mounting holes
         name: _mounting_holes
         operation: subtract
+cases:
+  # a 3d printable replacement for the top_plate pcb
+  plate_replacement:
+    - type: outline
+      name: plate
+      extrude: key_clip_depth
+      operation: add
+  _bottom:
+    - type: outline
+      name: pcb
+      extrude: case_bottom_thickness
+    - type: outline
+      name: _mounting_post_offsets
+      extrude: case_bottom_thickness + case_bottom_offset
+      operation: add
+    - type: outline
+      name: _mounting_posts
+      extrude: case_bottom_thickness + case_bottom_offset + board_thickness + key_surface_depth - key_clip_depth
+      operation: add
+    - type: outline
+      name: _mounting_post_holes
+      extrude: case_bottom_offset + board_thickness + key_surface_depth - key_clip_depth
+      shift: [0,0,case_bottom_thickness]
+      operation: subtract
+  _sides:
+    - type: outline
+      name: _side_outline
+      extrude: case_depth
+#  _side_cut_void:
+#    - type: outline
+#      name: side_cut
+#      extrude: 100 + case_wall_thickness
+#      rotate: [ 90,0,0 ]
+#      shift: [ -10,0,case_bottom_thickness + case_bottom_offset + board_thickness ]
+  base:
+    - type: case
+      name: _bottom
+    - type: case
+      name: _sides
+      operation: add
+#    - type: case
+#      name: _side_cut_void
+#      operatoin: add
+
 pcbs:
   top_plate:
     # include JLCJLCJLCJLC text somewhere
