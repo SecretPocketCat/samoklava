@@ -282,13 +282,38 @@ outlines:
         type: outline
         name: _base_outline
         operation: subtract
-    side_cut:
-      - type: rectangle
-        anchor:
+    _side_cut_poly:
+      - type: polygon
+        points:
           - ref: matrix_inner_top
-          - shift: [32, -48 + controller_shift_y]
-        size: [5,19]
-        corner: 2.5
+            shift: [ 32, -48 + controller_shift_y ]
+          - ref: matrix_inner_top
+            shift: [ 32+5, -48 + controller_shift_y ]
+          - ref: matrix_inner_top
+            shift: [ 32+5, -48 + controller_shift_y + 19]
+          - ref: matrix_inner_top
+            shift: [ 32, -48 + controller_shift_y + 19]
+    _side_cut:
+      main:
+        type: outline
+        name: _side_cut_poly
+        fillet: 2.45
+    _top_cut_poly:
+      - type: polygon
+        points:
+          - ref: matrix_inner_top
+            shift: [ kxr+5.3, kyt]
+          - ref: matrix_inner_top
+            shift: [ kxr+5.3+12, kyt ]
+          - ref: matrix_inner_top
+            shift: [ kxr+5.3+12, kyt-4.8 ]
+          - ref: matrix_inner_top
+            shift: [ kxr+5.3, kyt-4.8 ]
+    _top_cut:
+      main:
+        type: outline
+        name: _top_cut_poly
+        fillet: 0.8
     _screw_holes:
       top_left:
         type: circle
@@ -427,21 +452,31 @@ cases:
     - type: outline
       name: _side_outline
       extrude: case_depth
-#  _side_cut_void:
-#    - type: outline
-#      name: side_cut
-#      extrude: 100 + case_wall_thickness
-#      rotate: [ 90,0,0 ]
-#      shift: [ -10,0,case_bottom_thickness + case_bottom_offset + board_thickness ]
+  _side_cut_void:
+    - type: outline
+      name: _side_cut
+      extrude: 2+case_wall_thickness
+      rotate: [ 0,90,0 ]
+      shift: [ -case_wall_thickness-1,0,case_bottom_thickness + case_bottom_offset + board_thickness ]
+
+  _top_cut_void:
+    - type: outline
+      name: _top_cut
+      extrude: 2+case_wall_thickness
+      rotate: [ 90,0,0 ]
+      shift: [ 0,5,case_bottom_thickness + case_bottom_offset + board_thickness + 2.5 ]
   base:
     - type: case
       name: _bottom
     - type: case
       name: _sides
       operation: add
-#    - type: case
-#      name: _side_cut_void
-#      operatoin: add
+    - type: case
+      name: _side_cut_void
+      operation: subtract
+    - type: case
+      name: _top_cut_void
+      operation: subtract
 
 pcbs:
   top_plate:
