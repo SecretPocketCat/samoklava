@@ -15,8 +15,11 @@ units:
   key_surface_depth: 2.2
   case_bottom_thickness: 1.6
   case_wall_thickness: 1.6
-  case_leg_mount_thickness: 7
   case_bottom_offset: 3.15
+  case_leg_mount_thickness: 8
+  case_leg_mount_width: 12
+  case_leg_mount_hole_depth: 7
+  case_leg_mount_hole_diameter: 5
   case_depth: case_bottom_thickness + case_bottom_offset + board_thickness + key_surface_depth + 1
 points:
   key:
@@ -225,16 +228,22 @@ outlines:
           - ref: matrix_inner_top
             shift: [ kxr + case_wall_thickness, kyt + controller_shift_y + case_wall_thickness ]
           - ref: matrix_inner_top
-            shift: [ kxr+controller_x + case_wall_thickness , kyt + controller_shift_y + case_wall_thickness ]
+            shift: [ kxr+controller_x + case_wall_thickness + case_leg_mount_thickness, kyt + controller_shift_y + case_wall_thickness ]
           - ref: matrix_inner_top
-            shift: [ kxr+controller_x + case_wall_thickness, kyt + controller_shift_y + case_wall_thickness ]
+            shift: [ kxr+controller_x + case_wall_thickness + case_leg_mount_thickness, kyt + controller_shift_y + case_wall_thickness - case_leg_mount_width]
+          - ref: matrix_inner_top
+            shift: [ kxr+controller_x + case_wall_thickness, kyt + controller_shift_y + case_wall_thickness - case_leg_mount_width ]
           - ref: matrix_inner_top
             shift: [ kxr+controller_x + case_wall_thickness, kyt + controller_shift_y - controller_y - case_wall_thickness + py/2]
           #thumb cluster
           - ref: thumbfan_far_thumb
             shift: [ kxr + case_wall_thickness, kyt + case_wall_thickness ]
           - ref: thumbfan_far_thumb
-            shift: [ kxr + case_wall_thickness, kyb - case_wall_thickness ]
+            shift: [ kxr + case_wall_thickness, kyb - case_wall_thickness + case_leg_mount_width]
+          - ref: thumbfan_far_thumb
+            shift: [ kxr + case_wall_thickness + case_leg_mount_thickness, kyb - case_wall_thickness + case_leg_mount_width]
+          - ref: thumbfan_far_thumb
+            shift: [ kxr + case_wall_thickness + case_leg_mount_thickness, kyb - case_wall_thickness]
           - ref: thumbfan_near_thumb
             shift: [ kxl - case_wall_thickness + px , kyb - case_wall_thickness ]
           #bottom of fingers
