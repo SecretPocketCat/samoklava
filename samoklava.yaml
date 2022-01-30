@@ -251,6 +251,21 @@ outlines:
             shift: [ kxr + case_wall_thickness, kyb - case_wall_thickness]
           - ref: matrix_pinky_bottom
             shift: [ kxl - case_wall_thickness, kyb - case_wall_thickness]
+    _thumb_leg_mount_hole:
+      main:
+        type: circle
+        anchor:
+            - ref: thumbfan_far_thumb
+              shift: [ kxr + case_wall_thickness + case_leg_mount_thickness -case_leg_mount_hole_depth, kyb - case_wall_thickness + case_leg_mount_width / 2]
+        radius: case_leg_mount_hole_diameter/2
+
+    _top_leg_mount_hole:
+      main:
+        type: circle
+        anchor:
+          - ref: matrix_inner_top
+            shift: [ kxr+controller_x + case_wall_thickness + case_leg_mount_thickness - case_leg_mount_hole_depth, kyt + controller_shift_y + case_wall_thickness - case_leg_mount_width / 2 ]
+        radius: case_leg_mount_hole_diameter/2
     _switches:
       main:
         type: keys
@@ -467,13 +482,24 @@ cases:
       extrude: 2+case_wall_thickness
       rotate: [ 0,90,0 ]
       shift: [ -case_wall_thickness-1,0,case_bottom_thickness + case_bottom_offset + board_thickness ]
-
   _top_cut_void:
     - type: outline
       name: _top_cut
       extrude: 2+case_wall_thickness
       rotate: [ 90,0,0 ]
       shift: [ 0,5,case_bottom_thickness + case_bottom_offset + board_thickness + 2.5 ]
+  _thumb_leg_mount_hole:
+    - type: outline
+      name: _thumb_leg_mount_hole
+      extrude: case_leg_mount_hole_depth+1
+      rotate: [30,90,0]
+      shift: [0,0, case_depth / 2]
+  _top_leg_mount_hole:
+    - type: outline
+      name: _top_leg_mount_hole
+      extrude: case_leg_mount_hole_depth+1
+      rotate: [ 0,90,0 ]
+      shift: [ 0,0, case_depth / 2 ]
   base:
     - type: case
       name: _bottom
@@ -485,6 +511,12 @@ cases:
       operation: subtract
     - type: case
       name: _top_cut_void
+      operation: subtract
+    - type: case
+      name: _thumb_leg_mount_hole
+      operation: subtract
+    - type: case
+      name: _top_leg_mount_hole
       operation: subtract
 
 pcbs:
